@@ -1,0 +1,17 @@
+
+<%- include("partials/header"); -%>
+    <h1>Edit</h1>
+    <form class="" action="/edit/<%= post.id %>" method="post">
+      <div class="form-group">
+        <label>Title</label>
+        <input class="form-control" type="text" name="postTitle" value="<%=post.title%>">
+        <label>Author</label>
+        <input class="form-control" type="text" name="postAuthor" value="<%=post.author%>">
+        <label>Post</label>
+        <textarea class="form-control" name="postBody" rows="5" cols="30"><%=post.content%></textarea>
+      </div>
+      <input type="hidden" name="postId" value="<%= post.id %>">
+      <button class="btn btn-primary" type="submit" name="button">Confirm</button>
+    </form>
+
+<%- include("partials/footer"); -%>
