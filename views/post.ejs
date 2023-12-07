@@ -1,6 +1,8 @@
+
 <%- include("partials/header"); -%>
 
   <h1><%=title%></h1>
+  <h5>By <%=author%></h5>
   <p><%=content%></p>
 
     
@@ -8,7 +10,8 @@
     <form action="/delete" method="post">
       <input type="hidden" name="postId" value="<%= id %>">
       <a href="/" class="btn btn-primary ">Back</a>
-      <button type="submit" class="btn btn-primary ">Delete</button>
+      <a href="/edit/<%= id %>" class="btn btn-primary">Edit</a>
+      <button type="submit" class="btn btn-danger">Delete</button>
     </form>
 
 <%- include("partials/footer"); -%>

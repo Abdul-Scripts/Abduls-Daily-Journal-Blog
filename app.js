@@ -27,7 +27,7 @@ app.get('/', async (req, res) => {
     const client = await itemsPool.connect();
 
     try {
-        const result = await client.query('SELECT title, content FROM posts');
+        const result = await client.query('SELECT title, content, author FROM posts');
         const posts = result.rows;
 
         if (posts.length < 1) {
@@ -35,9 +35,10 @@ app.get('/', async (req, res) => {
             const examplePost = {
                 title: 'Example post',
                 content: 'This is an example blog post for test purposes.',
+                author: 'Abdul Wahib'
             };
 
-            await client.query('INSERT INTO posts (title, content) VALUES ($1, $2)', [examplePost.title, examplePost.content]);
+            await client.query('INSERT INTO posts (title, content, author) VALUES ($1, $2, $3)', [examplePost.title, examplePost.content, examplePost.author]);
 
             res.render('home', { startingContent: homeStartingContent, posts: [examplePost] });
         } else {
@@ -66,8 +67,8 @@ app.post("/compose", async (req, res) => {
     const client = await itemsPool.connect();
 
     try {
-        const { postTitle, postBody } = req.body;
-        await client.query('INSERT INTO posts (title, content) VALUES ($1, $2)', [postTitle, postBody]);
+        const { postTitle, postBody, postAuthor } = req.body;
+        await client.query('INSERT INTO posts (title, content, author) VALUES ($1, $2, $3)', [postTitle, postBody, postAuthor]);
         res.redirect("/");
     } catch (err) {
         console.error(err);
@@ -82,7 +83,7 @@ app.get("/posts/:postName", async (req, res) => {
     const client = await itemsPool.connect();
 
     try {
-        const result = await client.query('SELECT id, title, content FROM posts');
+        const result = await client.query('SELECT id, title, content, author FROM posts');
         const posts = result.rows;
 
         posts.forEach(post => {
@@ -92,7 +93,8 @@ app.get("/posts/:postName", async (req, res) => {
                 res.render("post", {
                     id: post.id, // Add the post ID to the rendered page
                     title: post.title,
-                    content: post.content
+                    content: post.content,
+                    author: post.author
                 });
             }
         });
@@ -116,6 +118,35 @@ app.post("/delete", async (req, res) => {
         client.release();
     }
 });
+
+// Route to handle rendering the edit form
+app.get('/edit/:postId', async (req, res) => {
+    const postId = req.params.postId;
+  
+    try {
+      const result = await itemsPool.query('SELECT * FROM posts WHERE id = $1', [postId]);
+      const post = result.rows[0]; // Assuming there's only one post with the given ID
+  
+      res.render('edit', { post });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error fetching post data');
+    }
+  });
+
+  // Handle form submission for editing a post
+app.post('/edit/:postId', async (req, res) => {
+    const postId = req.params.postId;
+    const { postTitle, postAuthor, postBody } = req.body;
+  
+    try {
+      await itemsPool.query('UPDATE posts SET title = $1, author = $2, content = $3 WHERE id = $4', [postTitle, postAuthor, postBody, postId]);
+      res.redirect('/');
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error updating post data');
+    }
+  });
 
 app.listen(3000, function() {
     console.log("Server started on port 3000");

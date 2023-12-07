@@ -47,7 +47,15 @@ html {
   margin-right: 10px;
 }
 
+.btn-danger {
+  justify-self: start;
+  border-radius: 1rem;
+  margin-top: 30px;
+  margin-right: 10px;
+}
+
 .navigation-link {
+  padding-top: 3px;
   color: white;
   text-decoration: none;
   transition: 0.2s ease;
@@ -55,12 +63,14 @@ html {
 }
 
 .navigation-link:link {
+  padding-top: 3px;
   color: white;
   text-decoration: none;
   transition: 0.2s ease;
 }
 
 .navigation-link:hover{
+  padding-top: 3px;
   color: white;
   font-size: 14px;
   text-decoration: none;
@@ -69,6 +79,7 @@ html {
 }
 
 .navigation-link:visited {
+  padding-top: 3px;
   color: white;
   text-decoration: none;
   transition: 0.2s ease;
