@@ -31,11 +31,15 @@ app.get('/', async (req, res) => {
         const posts = result.rows;
 
         if (posts.length < 1) {
-            const defaultPost = {
+            // Insert example post if the database is empty
+            const examplePost = {
                 title: 'Example post',
                 content: 'This is an example blog post for test purposes.',
             };
-            res.render('home', { startingContent: homeStartingContent, posts: [defaultPost] });
+
+            await client.query('INSERT INTO posts (title, content) VALUES ($1, $2)', [examplePost.title, examplePost.content]);
+
+            res.render('home', { startingContent: homeStartingContent, posts: [examplePost] });
         } else {
             res.render('home', { startingContent: homeStartingContent, posts: posts });
         }
@@ -78,7 +82,7 @@ app.get("/posts/:postName", async (req, res) => {
     const client = await itemsPool.connect();
 
     try {
-        const result = await client.query('SELECT title, content FROM posts');
+        const result = await client.query('SELECT id, title, content FROM posts');
         const posts = result.rows;
 
         posts.forEach(post => {
@@ -86,11 +90,26 @@ app.get("/posts/:postName", async (req, res) => {
 
             if (storedTitle === requestedTitle) {
                 res.render("post", {
+                    id: post.id, // Add the post ID to the rendered page
                     title: post.title,
                     content: post.content
                 });
             }
         });
+    } catch (err) {
+        console.error(err);
+    } finally {
+        client.release();
+    }
+});
+
+app.post("/delete", async (req, res) => {
+    const client = await itemsPool.connect();
+
+    try {
+        const postIdToDelete = req.body.postId; // Assuming you have a hidden input in your form with name="postId"
+        await client.query('DELETE FROM posts WHERE id = $1', [postIdToDelete]);
+        res.redirect("/");
     } catch (err) {
         console.error(err);
     } finally {

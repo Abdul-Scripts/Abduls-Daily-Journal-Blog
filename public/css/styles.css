@@ -44,4 +44,32 @@ html {
   background-color: #0587cd;
   border-radius: 1rem;
   margin-top: 30px;
+  margin-right: 10px;
+}
+
+.navigation-link {
+  color: white;
+  text-decoration: none;
+  transition: 0.2s ease;
+  font-size: 12px;
+}
+
+.navigation-link:link {
+  color: white;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.navigation-link:hover{
+  color: white;
+  font-size: 14px;
+  text-decoration: none;
+  border-bottom: 2px solid white;
+  transition: 0.2s ease;
+}
+
+.navigation-link:visited {
+  color: white;
+  text-decoration: none;
+  transition: 0.2s ease;
 }
